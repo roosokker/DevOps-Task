@@ -36,6 +36,9 @@ jobs:
         export PATH=$PATH:$HOME/bin
         echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
         kubectl version --client
+        sudo rm -rf /usr/local/aws-cli
+        sudo rm -f /usr/local/bin/aws
+        sudo rm -f /usr/local/bin/aws_completer
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         unzip awscliv2.zip
         sudo ./aws/install
