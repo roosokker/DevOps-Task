@@ -34,9 +34,9 @@ phases:
   
   pre_build:
     commands:
-      # - chmod +x gitVersion
-      # - ./gitVersion
-      # - IMAGE_TAG=$(git tag)    
+      - chmod +x gitVersion
+      - ./gitVersion
+      - IMAGE_TAG=$(git tag)    
       - echo "Logging into ECR"
       - AccountID=$(aws sts get-caller-identity --query Account --output text)
       - export ECR_REGISTRY=$AccountID.dkr.ecr.us-east-1.amazonaws.com
@@ -47,6 +47,9 @@ phases:
       - echo "Pushing Docker image to ECR"
       - docker push $AccountID.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:$IMAGE_TAG
       - aws eks update-kubeconfig --name $EKS_CLUSTER --region us-east-1
+      - kubectl config get-contexts
+      - kubectl config use-context arn:aws:eks:us-east-1:$AccountID:cluster/$EKS_CLUSTER
+      - kubectl get configmap aws-auth -n kube-system -o yaml
       - kubectl apply -f service.yml
       - export REPOSITORY_URI=$ECR_REGISTRY/$ECR_REPOSITORY
       - export IMAGE_TAG=$IMAGE_TAG
