@@ -31,9 +31,9 @@ jobs:
       run: |
         curl -O https://d1uj6qtbmh3dt5.cloudfront.net/awscli-exe-linux-x86_64.zip
         ls
-    #     unzip awscliv2.zip
-    #     sudo ./aws/install
-    #     aws --version
+        unzip awscli-exe-linux-x86_64.zip
+        sudo ./aws/install
+        aws --version
     #     curl -o $HOME/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl
     #     chmod +x $HOME/bin/kubectl
     #     echo 'export PATH=$PATH:$HOME/bin' >> $GITHUB_ENV
