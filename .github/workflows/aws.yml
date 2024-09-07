@@ -30,40 +30,41 @@ jobs:
     - name: Setup Needed Packages
       run: |
         curl -O https://d1uj6qtbmh3dt5.cloudfront.net/awscli-exe-linux-x86_64.zip
-        unzip awscliv2.zip
-        sudo ./aws/install
-        aws --version
-        curl -o $HOME/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl
-        chmod +x $HOME/bin/kubectl
-        echo 'export PATH=$PATH:$HOME/bin' >> $GITHUB_ENV
-        $HOME/bin/kubectl version --short --client
+        ls
+    #     unzip awscliv2.zip
+    #     sudo ./aws/install
+    #     aws --version
+    #     curl -o $HOME/bin/kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl
+    #     chmod +x $HOME/bin/kubectl
+    #     echo 'export PATH=$PATH:$HOME/bin' >> $GITHUB_ENV
+    #     $HOME/bin/kubectl version --short --client
 
-    - name: Get the current git tag
-      id: git-tag
-      run: echo "IMAGE_TAG=$(git describe --tags)" >> $GITHUB_ENV
+    # - name: Get the current git tag
+    #   id: git-tag
+    #   run: echo "IMAGE_TAG=$(git describe --tags)" >> $GITHUB_ENV
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      run : |
-        AccountId=$(aws sts get-caller-identity --query Account --output text)
-        aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AccountId.dkr.ecr.$AWS_REGION.amazonaws.com
+    # - name: Login to Amazon ECR
+    #   id: login-ecr
+    #   run : |
+    #     AccountId=$(aws sts get-caller-identity --query Account --output text)
+    #     aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AccountId.dkr.ecr.$AWS_REGION.amazonaws.com
 
-    # - name: Build, tag, and push image to Amazon ECR
-    #   id: build-image
-    #   env:
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #     IMAGE_TAG: ${{ env.IMAGE_TAG }}
-    #   run: |
-    #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-    #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-    #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+    # # - name: Build, tag, and push image to Amazon ECR
+    # #   id: build-image
+    # #   env:
+    # #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    # #     IMAGE_TAG: ${{ env.IMAGE_TAG }}
+    # #   run: |
+    # #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+    # #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+    # #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    # - name: Deploy Amazon EKS deployments
-    #   env:
-    #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    #     IMAGE_TAG: ${{ env.IMAGE_TAG }}
-    #   run: |
-    #     aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
-    #     kubectl config use-context ${{ env.EKS_CLUSTER }}
-    #     kubectl apply -f service.yml
-    #     envsubst < deployment.yml | kubectl apply -f -
+    # # - name: Deploy Amazon EKS deployments
+    # #   env:
+    # #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+    # #     IMAGE_TAG: ${{ env.IMAGE_TAG }}
+    # #   run: |
+    # #     aws eks update-kubeconfig --name ${{ env.EKS_CLUSTER }} --region ${{ env.AWS_REGION }}
+    # #     kubectl config use-context ${{ env.EKS_CLUSTER }}
+    # #     kubectl apply -f service.yml
+    # #     envsubst < deployment.yml | kubectl apply -f -
