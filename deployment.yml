@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: devops-task
-        image: $ECR_REGISTRY:$IMAGE_TAG
+        image: $REPOSITORY_URIIMAGE_TAG
         ports:
         - containerPort: 5000

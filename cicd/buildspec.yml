@@ -1,0 +1,58 @@
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    IMAGE_NAME: "python-img"
+    IMAGE_TAG: "1.3"
+    EKS_CLUSTER: "EKS-Cluster"
+  git-credentials-helper: yes
+
+phases:
+  install:
+    commands:
+      - curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.18.9/2020-11-02/bin/linux/amd64/kubectl
+      - chmod +x ./kubectl
+      - mkdir -p $HOME/bin/kubectl
+      - cp ./kubectl $HOME/bin/kubectl
+      - export PATH=$PATH:$HOME/bin
+      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      - kubectl version --client
+      - sudo rm -rf /usr/local/aws-cli
+      - sudo rm -f /usr/local/bin/aws
+      - sudo rm -f /usr/local/bin/aws_completer
+      - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+      - unzip awscliv2.zip
+      - sudo ./aws/install
+      - aws --version
+      - git config --global user.name "rodainasokkar"
+      - git config --global user.email "rodainasokkar@gmail.com"
+      - GITHUB_TOKEN=$(aws secretsmanager get-secret-value --secret-id github --query SecretString --output text | jq -r '.Token')
+      - echo "Authenticating Git with GitHub"
+      - git remote set-url origin https://$GITHUB_TOKEN@github.com/roosokker/DevOps-Task.git
+      - git pull origin main
+  
+  pre_build:
+    commands:
+      # - chmod +x gitVersion
+      # - ./gitVersion
+      # - IMAGE_TAG=$(git tag)    
+      - echo "Logging into ECR"
+      - AccountID=$(aws sts get-caller-identity --query Account --output text)
+      - export ECR_REGISTRY=$AccountID.dkr.ecr.us-east-1.amazonaws.com
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AccountID.dkr.ecr.us-east-1.amazonaws.com
+      - docker build -t $AccountID.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:$IMAGE_TAG .
+  build:
+    commands:
+      - echo "Pushing Docker image to ECR"
+      - docker push $AccountID.dkr.ecr.us-east-1.amazonaws.com/$IMAGE_NAME:$IMAGE_TAG
+      - aws eks update-kubeconfig --name $EKS_CLUSTER --region us-east-1
+      - kubectl apply -f service.yml
+      - export REPOSITORY_URI=$ECR_REGISTRY/$ECR_REPOSITORY
+      - export IMAGE_TAG=$IMAGE_TAG
+      - envsubst < deployment.yml | kubectl apply -f -
+      - kubectl get pods
+      - kubectl get nodes
+      - kubectl get Deployment
+      - kubectl get services
+
