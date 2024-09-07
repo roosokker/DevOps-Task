@@ -36,10 +36,10 @@ jobs:
         export PATH=$PATH:$HOME/bin
         echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
         kubectl version --client
-        apt install p7zip-full
+        sudo apt install p7zip-full
         curl "https://d1uj6qtbmh3dt5.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         ls
-        sudo 7z x awscliv2.zip
+        7z x awscliv2.zip
         sudo ./aws/install
         aws --version
 
