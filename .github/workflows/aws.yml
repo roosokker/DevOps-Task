@@ -29,6 +29,7 @@ jobs:
     
     - name: Setup Needed Packages
       run: |
+        sudo apt install curl
         curl -o awscliv2.zip https://d1uj6qtbmh3dt5.cloudfront.net/awscli-exe-linux-x86_64.zip
         ls
         unzip awscliv2.zip
