@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Set the base version (1.1)
+base_version="v1.2"
+
+# Get the latest tag that matches the base version
+latest_tag=$(git tag --list "${base_version}.*" | sort -V | tail -n 1)
+
+# If no tags exist, start with version v1.2.0
+if [ -z "$latest_tag" ]; then
+    new_tag="${base_version}.0"
+else
+    # Increment the patch version
+    new_tag=$(echo $latest_tag | awk -F. '{printf "%s.%d", $1"."$2, $3+1}')
+fi
+
+# Tag the new version
+git tag -a $new_tag -m "Automated versioning: $new_tag"
+
+# Push the new tag to the remote repository
+git push origin $new_tag
