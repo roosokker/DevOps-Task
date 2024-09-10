@@ -1,5 +1,5 @@
 locals {
-    cluster_name = "EKS-Cluster"
+    cluster_name = "EKS-Cluster-2"
 }
 
 resource "aws_eks_cluster" "EKSCluster" {
@@ -7,7 +7,7 @@ resource "aws_eks_cluster" "EKSCluster" {
   role_arn = aws_iam_role.eks_role.arn
 
   vpc_config {
-    subnet_ids =  concat(module.vpc.private_subnets, module.vpc.public_subnets)
+    subnet_ids =  module.vpc.private_subnets
   }
 
   enabled_cluster_log_types = ["api", "audit"]
@@ -24,9 +24,9 @@ data "aws_ssm_parameter" "eks_ami_release_version" {
 
 resource "aws_eks_node_group" "eks_cluster_node" {
   cluster_name    = aws_eks_cluster.EKSCluster.name
-  node_group_name = "eks-cluster-nodes"
+  node_group_name = "eks-cluster-nodes-2"
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
-  subnet_ids      = concat(module.vpc.private_subnets, module.vpc.public_subnets)
+  subnet_ids      = module.vpc.private_subnets
   version         = aws_eks_cluster.EKSCluster.version
   release_version = nonsensitive(data.aws_ssm_parameter.eks_ami_release_version.value)
 

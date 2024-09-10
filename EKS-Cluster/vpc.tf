@@ -1,9 +1,9 @@
 locals {
     region = "us-east-1"
-    cidr = "10.0.0.0/16"
-    vpc_name = "dev-vpc"
-    private_subnet = ["10.0.1.0/24", "10.0.2.0/24"]
-    public_subnet = ["10.0.4.0/24", "10.0.5.0/24"]
+    cidr = "11.0.0.0/16"
+    vpc_name = "dev2-vpc"
+    private_subnet = ["11.0.1.0/24", "11.0.2.0/24"]
+    public_subnet = ["11.0.4.0/24", "11.0.5.0/24"]
 }
 
 data "aws_availability_zones" "available" {}
@@ -22,9 +22,9 @@ module vpc {
         "Name" = local.vpc_name
     }
     public_subnet_tags = {
-        "Name" = "dev-Public-Subnet"
+        "Name" = "dev2-Public-Subnet"
     }
     private_subnet_tags = {
-        "Name" = "dev-Private-Subnet"
+        "Name" = "dev2-Private-Subnet"
     }
 }

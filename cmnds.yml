@@ -1,0 +1,12 @@
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 227055008421.dkr.ecr.us-east-1.amazonaws.com
+      - docker build -t 227055008421.dkr.ecr.us-east-1.amazonaws.com/python-img:1.4 .
+      - docker push 227055008421.dkr.ecr.us-east-1.amazonaws.com/python-img:1.4
+      - aws eks update-kubeconfig --name EKS-Cluster-2 --region us-east-1
+      - kubectl config use-context arn:aws:eks:us-east-1:227055008421:cluster/EKS-Cluster-2
+      - kubectl apply -f service.yml
+      - export REPOSITORY_URI=227055008421.dkr.ecr.us-east-1.amazonaws.com/python-img
+      - export IMAGE_TAG=1.4
+      - envsubst < deployment.yml | kubectl apply -f -
+      - kubectl delete services  my-service
+      - kubectl delete pods --all
+      - kubectl delete deployments my-deployment
